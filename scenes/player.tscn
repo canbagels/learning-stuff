@@ -1,0 +1,88 @@
+[gd_scene load_steps=9 format=3 uid="uid://ct7sr6jrdeiom"]
+
+[ext_resource type="Texture2D" uid="uid://ue1c0crn3ss8" path="res://brackeys_platformer_assets/sprites/knight.png" id="1_3q34p"]
+
+[sub_resource type="GDScript" id="GDScript_s4qs2"]
+script/source = "extends CharacterBody2D
+
+
+const SPEED = 130
+const JUMP_VELOCITY = -300
+
+# Get the gravity from the project settings to be synced with RigidBody nodes.
+var gravity = ProjectSettings.get_setting(\"physics/2d/default_gravity\")
+
+
+func _physics_process(delta):
+	# Add the gravity.
+	if not is_on_floor():
+		velocity.y += gravity * delta
+
+	# Handle jump.
+	if Input.is_action_just_pressed(\"ui_accept\") and is_on_floor():
+		velocity.y = JUMP_VELOCITY
+
+	# Get the input direction and handle the movement/deceleration.
+	# As good practice, you should replace UI actions with custom gameplay actions.
+	var direction = Input.get_axis(\"ui_left\", \"ui_right\")
+	if direction:
+		velocity.x = direction * SPEED
+	else:
+		velocity.x = move_toward(velocity.x, 0, SPEED)
+
+	move_and_slide()
+"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a6jjp"]
+atlas = ExtResource("1_3q34p")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6l2y5"]
+atlas = ExtResource("1_3q34p")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dg6ud"]
+atlas = ExtResource("1_3q34p")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qiju8"]
+atlas = ExtResource("1_3q34p")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_1gc16"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a6jjp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6l2y5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dg6ud")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qiju8")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 6.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_xei5n"]
+radius = 5.0
+
+[node name="CharacterBody2D" type="CharacterBody2D"]
+z_index = 5
+script = SubResource("GDScript_s4qs2")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -12)
+sprite_frames = SubResource("SpriteFrames_1gc16")
+animation = &"idle"
+autoplay = "idle"
+frame_progress = 0.0717874
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -5)
+shape = SubResource("CircleShape2D_xei5n")
