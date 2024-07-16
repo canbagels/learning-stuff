@@ -1,0 +1,35 @@
+[gd_scene load_steps=6 format=3 uid="uid://ch1ib3hr37hx"]
+
+[ext_resource type="Script" path="res://scripts/q_block.gd" id="1_h5g3b"]
+[ext_resource type="Texture2D" uid="uid://c3850i2aumpbj" path="res://brackeys_platformer_assets/sprites/world_tileset.png" id="2_yel2x"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fnohb"]
+atlas = ExtResource("2_yel2x")
+region = Rect2(48, 32, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_tjldq"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fnohb")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kqvst"]
+size = Vector2(16, 16)
+
+[node name="q_block" type="Area2D"]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("1_h5g3b")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -8)
+sprite_frames = SubResource("SpriteFrames_tjldq")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -8)
+shape = SubResource("RectangleShape2D_kqvst")
