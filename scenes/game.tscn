@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://dvv6rte4ncfga"]
+[gd_scene load_steps=15 format=3 uid="uid://dvv6rte4ncfga"]
 
 [ext_resource type="PackedScene" uid="uid://ct7sr6jrdeiom" path="res://scenes/player.tscn" id="1_kc38f"]
 [ext_resource type="Script" path="res://scripts/game_manager.gd" id="1_w16vu"]
@@ -7,6 +7,9 @@
 [ext_resource type="PackedScene" uid="uid://bl17p7ulfvm35" path="res://scenes/coin.tscn" id="4_j4t86"]
 [ext_resource type="PackedScene" uid="uid://ctas0obixagll" path="res://scenes/slime.tscn" id="6_p8qko"]
 [ext_resource type="FontFile" uid="uid://7sqhe4e0vef0" path="res://brackeys_platformer_assets/fonts/PixelOperator8.ttf" id="8_6dq4s"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_drpl1"]
+size = Vector2(228, 32)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_v7lci"]
 texture = ExtResource("2_mjuok")
@@ -472,6 +475,14 @@ theme_override_font_sizes/font_size = 8
 text = "you collected x coins!!!!!!!!!"
 horizontal_alignment = 1
 autowrap_mode = 2
+
+[node name="end_game_zone" type="StaticBody2D" parent="game manager"]
+collision_layer = 0
+collision_mask = 4
+
+[node name="end_game_collision_zone" type="CollisionShape2D" parent="game manager/end_game_zone"]
+position = Vector2(1102, -128)
+shape = SubResource("RectangleShape2D_drpl1")
 
 [node name="coins" type="Node" parent="."]
 
