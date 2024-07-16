@@ -1,8 +1,10 @@
-[gd_scene load_steps=10 format=3 uid="uid://ctas0obixagll"]
+[gd_scene load_steps=9 format=3 uid="uid://ctas0obixagll"]
 
 [ext_resource type="Texture2D" uid="uid://dbom6chwbtk56" path="res://brackeys_platformer_assets/sprites/slime_green.png" id="1_fnf6v"]
 [ext_resource type="Script" path="res://scripts/slime.gd" id="1_ubj63"]
-[ext_resource type="PackedScene" uid="uid://otj1fysxv4nb" path="res://scenes/killzone.tscn" id="2_2yctr"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vp6b3"]
+size = Vector2(10, 11)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ulnot"]
 atlas = ExtResource("1_fnf6v")
@@ -40,23 +42,22 @@ animations = [{
 "speed": 6.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_vp6b3"]
-size = Vector2(10, 11)
-
 [node name="slime" type="Node2D"]
 script = ExtResource("1_ubj63")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(0, -6.5)
+shape = SubResource("RectangleShape2D_vp6b3")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -12)
 sprite_frames = SubResource("SpriteFrames_0wiao")
 autoplay = "default"
 frame_progress = 0.178443
-
-[node name="killzone" parent="AnimatedSprite2D" instance=ExtResource("2_2yctr")]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="AnimatedSprite2D/killzone"]
-position = Vector2(0, 5.5)
-shape = SubResource("RectangleShape2D_vp6b3")
 
 [node name="RayCast R" type="RayCast2D" parent="."]
 position = Vector2(0, -6)
