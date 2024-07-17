@@ -1,7 +1,8 @@
-[gd_scene load_steps=32 format=3 uid="uid://ct7sr6jrdeiom"]
+[gd_scene load_steps=34 format=3 uid="uid://ct7sr6jrdeiom"]
 
 [ext_resource type="Texture2D" uid="uid://ue1c0crn3ss8" path="res://brackeys_platformer_assets/sprites/knight.png" id="1_3q34p"]
-[ext_resource type="Script" path="res://scripts/Area2D.gd" id="2_n4cop"]
+[ext_resource type="Script" path="res://scripts/killzone.gd" id="2_gr05e"]
+[ext_resource type="Script" path="res://scripts/bonk.gd" id="3_ph2rl"]
 
 [sub_resource type="GDScript" id="GDScript_s4qs2"]
 script/source = "extends CharacterBody2D
@@ -35,9 +36,9 @@ func _physics_process(delta):
 	
 	
 	# flip sprite
-	if direction > 0:
+	if direction > 0 and fellow.IsDying == false:
 		animated_sprite.flip_h = false
-	elif direction < 0:
+	elif direction < 0 and fellow.IsDying == false:
 		animated_sprite.flip_h = true
 	
 	# play animations
@@ -56,13 +57,22 @@ func _physics_process(delta):
 		if fellow.IsDying == false:
 			animated_sprite.play(\"jumping\")
 	
-	if direction:
+	if direction and fellow.IsDying == false:
 		velocity.x = direction * SPEED
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 	move_and_slide()
+# Replace with function body.
 
+func _on_playeranimator_animation_finished():
+	if fellow.Deathcount >= 1:
+		await get_tree().create_timer(2).timeout
+		get_tree().change_scene_to_file(\"res://scenes/gameover.tscn\")
 "
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_44h41"]
+atlas = ExtResource("1_3q34p")
+region = Rect2(96, 224, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_2k4t0"]
 atlas = ExtResource("1_3q34p")
@@ -166,6 +176,14 @@ region = Rect2(224, 96, 32, 32)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_1gc16"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_44h41")
+}],
+"loop": true,
+"name": &"dead",
+"speed": 5.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_2k4t0")
@@ -277,7 +295,7 @@ script = SubResource("GDScript_s4qs2")
 unique_name_in_owner = true
 position = Vector2(0, -12)
 sprite_frames = SubResource("SpriteFrames_1gc16")
-animation = &"dying"
+animation = &"dead"
 autoplay = "idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -287,7 +305,7 @@ shape = SubResource("CircleShape2D_xei5n")
 [node name="killzone" type="Area2D" parent="."]
 collision_layer = 0
 collision_mask = 4
-script = ExtResource("2_n4cop")
+script = ExtResource("2_gr05e")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="killzone"]
 position = Vector2(0, -5)
@@ -298,10 +316,14 @@ shape = SubResource("CircleShape2D_lkanw")
 [node name="bonk" type="Area2D" parent="."]
 collision_layer = 0
 collision_mask = 16
+script = ExtResource("3_ph2rl")
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="bonk"]
 position = Vector2(0, -12)
 shape = SubResource("CircleShape2D_lkanw")
 
+[connection signal="animation_finished" from="playeranimator" to="." method="_on_playeranimator_animation_finished"]
 [connection signal="body_entered" from="killzone" to="killzone" method="_on_body_entered"]
 [connection signal="timeout" from="killzone/Timer" to="killzone" method="_on_timer_timeout"]
+[connection signal="body_entered" from="bonk" to="." method="_on_bonk_body_entered"]
+[connection signal="body_entered" from="bonk" to="bonk" method="_on_body_entered"]
